@@ -7,13 +7,27 @@ import (
 	"strings"
 )
 
+type config struct {
+	Count    int    `json:"count"`
+	Next     string `json:"next"`
+	Previous any    `json:"previous"`
+	Results  []struct {
+		Name string `json:"name"`
+		URL  string `json:"url"`
+	} `json:"results"`
+}
+
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(*config) error
 }
 
 func startRepl() {
+	cfg := &config{
+		Next:     "https://pokeapi.co/api/v2/location-area/",
+		Previous: nil,
+	}
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
@@ -31,7 +45,7 @@ func startRepl() {
 			fmt.Println("Unknown command")
 			continue
 		}
-		if err := command.callback(); err != nil {
+		if err := command.callback(cfg); err != nil {
 			fmt.Printf("Error executing command %v with error: %v\n", inputCommand, err)
 		}
 	}
@@ -54,6 +68,16 @@ func getCommands() map[string]cliCommand {
 			name:        "help",
 			description: "Displays a help message",
 			callback:    commandHelp,
+		},
+		"map": {
+			name:        "map",
+			description: "Location areas in the Pokemon world",
+			callback:    commandMap,
+		},
+		"mapb": {
+			name:        "mapb",
+			description: "Location areas for previous page",
+			callback:    commandMapb,
 		},
 	}
 }
