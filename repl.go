@@ -5,17 +5,9 @@ import (
 	"fmt"
 	"os"
 	"strings"
-)
 
-type config struct {
-	Count    int    `json:"count"`
-	Next     string `json:"next"`
-	Previous any    `json:"previous"`
-	Results  []struct {
-		Name string `json:"name"`
-		URL  string `json:"url"`
-	} `json:"results"`
-}
+	"github.com/ds-roshan/pokedexcli/internal/pokeapi"
+)
 
 type cliCommand struct {
 	name        string
@@ -23,11 +15,13 @@ type cliCommand struct {
 	callback    func(*config) error
 }
 
-func startRepl() {
-	cfg := &config{
-		Next:     "https://pokeapi.co/api/v2/location-area/",
-		Previous: nil,
-	}
+type config struct {
+	pokeapiClient       pokeapi.Client
+	nextLocationURL     *string
+	previousLocationURL *string
+}
+
+func startRepl(cfg *config) {
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
