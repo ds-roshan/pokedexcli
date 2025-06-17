@@ -11,14 +11,13 @@ func startRepl() {
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
-		if scanner.Scan() {
-			text := scanner.Text()
-			if len(text) < 1 {
-				continue
-			}
-			words := cleanInput(text)
-			fmt.Printf("Your command was: %v\n", words[0])
+		scanner.Scan()
+		text := scanner.Text()
+		if len(text) == 0 {
+			continue
 		}
+		words := cleanInput(text)
+		fmt.Printf("Your command was: %v\n", words[0])
 	}
 }
 
