@@ -7,8 +7,6 @@ import (
 
 func commandExplore(cfg *config, args ...string) error {
 
-	fmt.Println("total items: ", len(args))
-
 	if len(args) < 2 {
 		return errors.New("you must provide a location name")
 	}
